@@ -1,7 +1,7 @@
 baseURL = "https://example.com/"
-title = "Hugo Theme Tailwind Example Site"
-author = "Your Name"
-copyright = "Your Name"
+title = "Harry's tech blog"
+author = "Harry"
+copyright = "Harry"
 paginate = 10
 languageCode = "en"
 theme = "tailwind"
