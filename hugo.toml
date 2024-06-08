@@ -10,6 +10,7 @@ theme = "tailwind"
   # dir name of your blog content (default is `content/posts`).
   # the list of set content will show up on your index page (baseurl).
   contentTypeName = "posts"
+  toc = false
 
   [params.header]
     logo = "logo.webp"
@@ -17,6 +18,18 @@ theme = "tailwind"
   [params.footer]
     since = 2023
     poweredby = true
+
+  [[params.social_media.items]]
+    enabled = true
+    title = 'Linkedin'
+    icon = 'brand-linkedin'
+    link = 'https://www.linkedin.com/in/harry-dickinson-03b505248/'
+  
+  [[params.social_media.items]]
+    enabled = true
+    title = 'Github'
+    icon = 'brand-github'
+    link = 'https://github.com/IrrelevantElephant'
 
 [menu]
 
@@ -28,7 +41,7 @@ theme = "tailwind"
 
   [[menu.main]]
     identifier = "about"
-    name = "About"
+    name = "About me"
     pageRef = "/about"
     weight = 10
 
