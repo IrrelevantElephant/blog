@@ -41,7 +41,7 @@ theme = "tailwind"
 
   [[menu.main]]
     identifier = "about"
-    name = "About me"
+    name = "About Me"
     pageRef = "/about"
     weight = 10
 

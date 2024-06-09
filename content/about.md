@@ -6,8 +6,10 @@ draft = false
 
 Hi!
 
-My name is Harry. I'm a software engineer with about fifteen years of experience, developing mainly in .NET technologies. Today my primary interest is in CICD, testing and observability.
+My name is Harry. I'm a software engineer from the UK with about fifteen years of experience, developing mainly in .NET technologies. These days my primary interests are CI/CD, testing and observability.
 
-This is my blog where I plan to share short articles about things I've learned, either recently or in the past.
+This is my blog where I plan to share the things I've learned, either recently or in the past.
 
-[My first post](/posts/my-first-post)
+All the code in this blog will be made available on [my github page](https://github.com/IrrelevantElephant)
+
+[Logging in .NET with OpenTelemetry and Loki](/posts/otel-loki-dotnet)
