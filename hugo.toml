@@ -12,6 +12,7 @@ theme = "tailwind"
   contentTypeName = "posts"
   toc = false
   subtitle = ""
+  keywords = ".net, software development, programming, docker"
 
   [params.header]
     logo = "logo.webp"
