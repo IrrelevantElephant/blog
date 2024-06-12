@@ -11,5 +11,3 @@ My name is Harry. I'm a software engineer from the UK with about fifteen years o
 This is my blog where I plan to share the things I've learned, either recently or in the past.
 
 All the code in this blog will be made available on [my github page](https://github.com/IrrelevantElephant)
-
-[Logging in .NET with OpenTelemetry and Loki](/posts/otel-loki-dotnet)
