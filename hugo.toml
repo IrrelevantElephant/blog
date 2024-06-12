@@ -11,6 +11,7 @@ theme = "tailwind"
   # the list of set content will show up on your index page (baseurl).
   contentTypeName = "posts"
   toc = false
+  subtitle = ""
 
   [params.header]
     logo = "logo.webp"
