@@ -109,7 +109,7 @@ public class Worker : BackgroundService
 
 We'll add the namespace in a using statement and register the background service with the our application in Program.cs like so:
 
-```diff
+{{< highlight csharp "linenos=table,hl_lines=1 10, linenostart=1" >}}
 +using Api;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -119,10 +119,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-+builder.Services.AddHostedService<Worker>();
+builder.Services.AddHostedService<Worker>();
 
 var app = builder.Build();
-```
+{{< /highlight >}}
 
 Now when we run out application we should see logs generated automatically:
 
@@ -241,7 +241,7 @@ As the Loki exporter doesn't currently exist in the core OpenTelemetry repositor
 
 We can use the following in our compose file to mount our configuration and run the collector:
 
-```diff
+{{< highlight yaml "linenos=table,hl_lines=8 8-16,linenostart=1" >}}
 services:
   api:
     build:
@@ -249,17 +249,16 @@ services:
     ports:
       - 8080:8080
 
-+ otelcol:
-+   image: otel/opentelemetry-collector-contrib:0.102.0
-+   container_name: otel-col
-+   command: [ "--config=/etc/otelcol-config.yml" ]
-+   volumes:
-+     - ./otel-collector/otelcol-config.yml:/etc/otelcol-config.yml
-+   ports:
-+     - "4317:4317"
-+     - "4318:4318"
-```
-
+  otelcol:
+    image: otel/opentelemetry-collector-contrib:0.102.0
+    container_name: otel-col
+    command: [ "--config=/etc/otelcol-config.yml" ]
+    volumes:
+      - ./otel-collector/otelcol-config.yml:/etc/otelcol-config.yml
+    ports:
+      - "4317:4317"
+      - "4318:4318"
+{{< / highlight >}}
 # Orchestration
 
 If we run our compose file we should see the otel collector startup, but we do not expect any recurring activity while we aren't actively shipping it logs. Let's change that by adding the OpenTelemetry exporter NuGet package tools to our application.
@@ -271,17 +270,17 @@ dotnet add package OpenTelemetry.Exporter.OpenTelemetryProtocol
 
 Now let's register the exporter in our application:
 
-```diff
+{{< highlight csharp "linenos=table,hl_lines=3, linenostart=1" >}}
 builder.Services.AddHostedService<Worker>();
 
-+builder.Logging.AddOpenTelemetry(options => options.AddOtlpExporter());
+builder.Logging.AddOpenTelemetry(options => options.AddOtlpExporter());
 
 var app = builder.Build();
-```
+{{< /highlight >}}
 
 If we run the application, we will see that nothing much else is happening. No logs appear to be sent to the collector. In order to wire everything up we'll need to configure our application with the collector's endpoint. We can do this by setting the `OTEL_EXPORTER_OTLP_ENDPOINT` environment variable in our app container's compose configuration:
 
-```diff
+{{< highlight yaml "linenos=table,hl_lines=8, linenostart=1" >}}
 services:
   api:
     build:
@@ -289,8 +288,8 @@ services:
     ports:
       - 8080:8080
     environment:
-+     - OTEL_EXPORTER_OTLP_ENDPOINT=http://otelcol:4317
-```
+     - OTEL_EXPORTER_OTLP_ENDPOINT=http://otelcol:4317
+{{< /highlight >}}
 
 Spinning up our compose configuration should now result in the otel-col container periodically logging the following:
 
@@ -304,7 +303,7 @@ This the the debug exporter we configured earlier.
 
 Now that we have an application producing logs and shipping them to our OpenTelemetry collector we can work on sending them on to Loki and visualising them in Grafana. To do this we'll set up both Loki and Grafana in our compose file:
 
-```diff
+{{< highlight yaml "linenos=table,hl_lines=20-39, linenostart=1" >}}
 services:
   api:
     build:
@@ -324,27 +323,26 @@ services:
       - "4317:4317"
       - "4318:4318"
 
-+ loki:
-+   image: grafana/loki:3.0.0
-+   ports:
-+     - "3100:3100"
-+   command: -config.file=/etc/loki/local-config.yaml
-
-+ grafana:
-+   image: grafana/grafana:11.0.0
-+   environment:
-+     - GF_PATHS_PROVISIONING=/etc/grafana/provisioning
-+     - GF_AUTH_ANONYMOUS_ENABLED=true
-+     - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
-+   volumes:
-+     - ./grafana/:/etc/grafana/provisioning
-+     - ./grafana/grafana.ini:/etc/grafana/grafana.ini
-+   ports:
-+     - "3000:3000"
-+   depends_on:
-+     loki:
-+       condition: service_started
-```
+  loki:
+    image: grafana/loki:3.0.0
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yaml
+  grafana:
+    image: grafana/grafana:11.0.0
+    environment:
+      - GF_PATHS_PROVISIONING=/etc/grafana/provisioning
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+    volumes:
+      - ./grafana/:/etc/grafana/provisioning
+      - ./grafana/grafana.ini:/etc/grafana/grafana.ini
+    ports:
+      - "3000:3000"
+    depends_on:
+      loki:
+        condition: service_started
+{{< /highlight >}}
 
 To make things easy for ourselves we'll add two configuration files for Grafana. A grafana.ini which will configure anonymous access, as well as a datasources.yaml to automatically link the instance to our Loki container.
 
@@ -402,11 +400,11 @@ Now if we run our compose file we will the Loki and Grafana containers running. 
 
 In the otelcol-config.yml, add the loki exporter and register it in the pipeline:
 
-```diff
+{{< highlight yaml "linenos=table,hl_lines=3-4 14-15, linenostart=1" >}}
 exporters:
   debug:
-+ loki:
-+   endpoint: http://loki:3100/loki/api/v1/push
+  loki:
+    endpoint: http://loki:3100/loki/api/v1/push
 
 processors:
   batch:
@@ -416,9 +414,8 @@ service:
     logs:
       receivers: [otlp]
       processors: [batch]
--     exporters: [debug]
-+     exporters: [debug, loki]
-```
+      exporters: [debug, loki]
+{{< /highlight >}}
 
 Running the compose configuration should now produce similar output, but if you navigate to the data source explorer in Grafana you should be able query for some logs. Simply filtering for `{exporter="OTLP"}` should yield the logs from your application.
 
